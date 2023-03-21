@@ -1,6 +1,12 @@
-const contactData = require('../DummyData/messageData')
+var dbQuery = require('../db.config');
 
 // Display list of all Contact Instances.
-exports.contact_list = (req, res) => {
-  return res.json({contacts: contactData})
+async function contact_list (req, res) {
+  return await 
+  dbQuery().query("SELECT * FROM contact", function (error,results) {
+      if (error) throw error;
+      res.json(results);
+    });
 };
+
+module.exports = {contact_list}

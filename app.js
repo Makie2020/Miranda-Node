@@ -1,54 +1,24 @@
 var express = require("express");
-var bodyParser = require("body-parser");
-require('dotenv').config()
-var users = require('./user/user')
-
-const routes = require('./routes/login');
-
-const { API_PORT } = process.env;
-const { SECRET_KEY } = process.env;
-const port = process.env.PORT || API_PORT;
+var cors = require("cors")
+var dotenv = require ('dotenv');
+var passport = require("passport");
+require('./auth/auth');
 const listEndpoints = require('express-list-endpoints')
 
-var passport = require("passport");
-var passportJWT = require("passport-jwt");
-var ExtractJwt = passportJWT.ExtractJwt;
-var JwtStrategy = passportJWT.Strategy;
-var jwtOptions = {}
-jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-jwtOptions.secretOrKey = SECRET_KEY;
+dotenv.config()
+const app = express();
+const allowedOrigins = ['http://localhost:3002'];
+const options = {
+  origin: allowedOrigins
+};
 
-var strategy = new JwtStrategy(jwtOptions, function(jwt_payload, next) {
-  var user = users.filter( user => user.id == jwt_payload.id)[0];
-  if (user) {
-    next(null, user);
-  } else {
-    next(null, false);
-  }
-});
+app.use(cors(options));
 
-passport.use(strategy);
-
-var app = express();
-app.use(passport.initialize());
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
-app.use(bodyParser.json())
-
-
-// TEST SECURE ROUTE
-app.get("/secret", passport.authenticate('jwt', { session: false }), function(req, res){
-    res.json({
-      message: 'You made it to the secure route',
-      user: req.body.name
-    })
-});
-
-//ROUTERS
+app.use(express.json());
 
 //LOGIN
-app.use('/', routes);
+const routerLogin = require('./routers/login');
+app.use('/login', routerLogin);
 
 const routerBookings = require('./routers/bookings');
 app.use('/bookings', passport.authenticate('jwt', { session: false }), routerBookings);
@@ -70,16 +40,14 @@ app.get("/", function(req, res) {
 });
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function(next) {
   next(createError(404));
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
   res.status(err.status || 500);
-  res.render('error');
+  res.json(err.message);
 });
 
 
