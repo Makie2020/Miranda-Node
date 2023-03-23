@@ -18,7 +18,7 @@ const createRoomSchema = Joi.object({
   amenities:  Joi.string().min(3).required(),
   price: Joi.number().integer().required(),
   offer_price: Joi.number().integer().required(),
-  status: Joi.string().min(5).required
+  status: Joi.string().min(5).required()
 });
 
 exports.validateCreateRoom = validator(createRoomSchema);
@@ -38,7 +38,7 @@ const createEditRoomSchema = Joi.object({
   amenities:  Joi.string().min(3).required(),
   price: Joi.number().integer().required(),
   offer_price: Joi.number().integer().required(),
-  status: Joi.string().min(5).required
+  status: Joi.string().min(5).required()
 });
 
 exports.validateEditRoom = validator(createEditRoomSchema);
@@ -54,7 +54,7 @@ const createEditBookingSchema = Joi.object({
   room_type:Joi.string().required(),
   room_number: Joi.number().integer().min(1).required(),
   status:Joi.string().required(),
-  price: Joi.number().integer().min(1).required(),
+  price: Joi.number().integer().min(1).required()
 });
 
 exports.validateEditBooking = validator(createEditBookingSchema);
@@ -70,7 +70,7 @@ const createBookingSchema = Joi.object({
   room_type:Joi.string().required(),
   room_number: Joi.number().integer().min(1).required(),
   status:Joi.string().required(),
-  price: Joi.number().integer().min(1).required(),
+  price: Joi.number().integer().min(1).required()
 });
 
 exports.validateCreateBooking = validator(createBookingSchema);

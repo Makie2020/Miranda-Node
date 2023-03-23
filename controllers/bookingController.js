@@ -10,7 +10,6 @@ async function bookingList (req, res) {
     });
 };
 
-
 // Display detail page for a specific BookingInstance.
 async function bookingDetails (req, res)  {
   const { id } = req.params;
