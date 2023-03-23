@@ -1,20 +1,14 @@
 var express = require("express");
-var cors = require("cors")
 var dotenv = require ('dotenv');
+dotenv.config()
 var passport = require("passport");
-require('./auth/auth');
 const listEndpoints = require('express-list-endpoints')
 
-dotenv.config()
+require('./auth/auth');
 const app = express();
-const allowedOrigins = ['http://localhost:3002'];
-const options = {
-  origin: allowedOrigins
-};
-
-app.use(cors(options));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 //LOGIN
 const routerLogin = require('./routers/login');
@@ -34,7 +28,6 @@ app.use('/contact', passport.authenticate('jwt', { session: false }), routerCont
 
 
 const list = (listEndpoints(app));
-console.log(list)
 app.get("/", function(req, res) {
   res.json({message: list});
 });

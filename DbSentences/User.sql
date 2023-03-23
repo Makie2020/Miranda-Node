@@ -2,6 +2,7 @@ CREATE TABLE Users (
     id int,
     photo varchar(255),
     full_name varchar(255),
+  	position varchar(255),
     email varchar(255),
     start_date varchar(255),
   	description varchar(255),

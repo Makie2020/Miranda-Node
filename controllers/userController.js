@@ -1,10 +1,10 @@
-var dbQuery = require('../db.config');
+var dbQuery = require('../db/db.config');
 const bcrypt = require("bcrypt");
 
 // Display list of allUserInstances.
 async function usersList (req, res) {
   return await 
-  dbQuery().query("SELECT * FROM users", function (error,results) {
+  dbQuery("SELECT * FROM users", function (error,results) {
       if (error) throw error;
       res.json(results);
     });
@@ -24,7 +24,7 @@ async function create_user (req, res) {
     password: hash
   };
 
-  dbQuery().query(sql, userObj, error => {
+  dbQuery(sql, userObj, function(error) {
     if (error) throw error;
     res.send(`User ${id} created!`);
   });

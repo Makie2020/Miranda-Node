@@ -1,9 +1,11 @@
-var dbQuery = require('../db.config');
+var dbQuery = require('../db/db.config');
+const Joi = require("joi");
+const { validateCreateRoom , validateEditRoom} = require("../db/validationJoi");
 
 // Display list of allRoomInstances.
 async function roomList (req, res) {
   return await 
-  dbQuery().query("SELECT * FROM rooms", function (error,results) {
+  dbQuery("SELECT * FROM rooms", function (error,results) {
       if (error) throw error;
       res.json(results);
     });
@@ -13,7 +15,7 @@ async function roomList (req, res) {
 async function roomDetails (req, res) {
   const { id } = req.params;
   const sql = `SELECT * FROM rooms WHERE id = ${id}`;
-  dbQuery().query(sql, (error, result) => {
+  dbQuery(sql, function (error, result) {
     if (error) throw error;
     if (result.length > 0) {
       res.json(result);
@@ -25,23 +27,29 @@ async function roomDetails (req, res) {
 
 // Handle RoomInstance create on POST.
 async function create_room (req, res) {
-  const sql = 'INSERT INTO rooms SET ?';
+  const { id, image, imageTwo, imageThree, imageFour, imageFive, room_type, room_number, name, discountPercentage, discount, amenities, price, offer_price, status } = validateCreateRoom(req.body);
+  const sql = 
+  `INSERT INTO rooms SET 
+    id = '${id}',
+    image = '${image}', 
+    imageTwo = '${imageTwo}', 
+    imageThree = '${imageThree}', 
+    imageFour = '${imageFour}', 
+    imageFive = '${imageFive}', 
+    room_number='${room_number}', 
+    room_type = '${room_type}', 
+    name = '${name}',
+    discountPercentage = '${discountPercentage}',
+    discount = '${discount}', 
+    amenities = '${amenities}', 
+    price = '${price}', 
+    offer_price = '${offer_price}', 
+    status ='${status}'`; 
 
-  const roomObj = {
-    image: req.body.image,
-    room_number: req.body.room_number,
-    room_type: req.body.room_type,
-    name: req.body.name,
-    amenities: req.body.amenities,
-    price: req.body.price,
-    offer_price: req.body.offer_price,
-    status: req.body.status
-  };
-
-  dbQuery().query(sql, roomObj, error => {
+  dbQuery(sql, function(error) {
     if (error) throw error;
-    res.send('Room created!');
-  });
+    res.send(`Room ${id} created!`);
+  });;
 };
 
 // Handle RoomInstance delete on POST.
@@ -49,19 +57,35 @@ async function delete_room (req, res) {
   const { id } = req.params;
   const sql = `DELETE FROM rooms WHERE id= ${id}`;
 
-  dbQuery().query(sql, error => {
+  dbQuery(sql, function (error) {
     if (error) throw error;
-    res.send('Room deleted');
+    res.send(`Room ${id} deleted`);
   });
 };
 
 // Display BookInstance update on PUT.
 async function room_update (req, res) {
   const { id } = req.params;
-  const { image, room_number, room_type, name, amenities, price, offer_price, status } = req.body;
-  const sql = `UPDATE rooms SET image = '${image}', room_number='${room_number}', room_type = '${room_type}', name = '${name}', amenities = '${amenities}', price = '${price}', offer_price = '${offer_price}', status ='${status}' WHERE id =${id}`;
+  const { image, imageTwo, imageThree, imageFour, imageFive, room_type,room_number, name, discountPercentage, discount, amenities, price, offer_price, status } = validateEditRoom(req.body);
+  const sql = 
+  `UPDATE rooms SET 
+    image = '${image}', 
+    imageTwo = '${imageTwo}', 
+    imageThree = '${imageThree}', 
+    imageFour = '${imageFour}', 
+    imageFive = '${imageFive}', 
+    room_number='${room_number}', 
+    room_type = '${room_type}', 
+    name = '${name}',
+    discountPercentage = '${discountPercentage}',
+    discount = '${discount}',
+    amenities = '${amenities}', 
+    price = '${price}', 
+    offer_price = '${offer_price}', 
+    status ='${status}'
+    WHERE id =${id}`;
 
-  dbQuery().query(sql, error => {
+  dbQuery(sql, function(error) {
     if (error) throw error;
     res.send(`Room ${id} updated!`);
   });
