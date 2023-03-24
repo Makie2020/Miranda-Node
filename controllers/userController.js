@@ -27,6 +27,7 @@ async function create_user (req, res) {
   dbQuery(sql, userObj, function(error) {
     if (error) throw error;
     res.send(`User ${id} created!`);
+    res.json(success= true);
   });
 };
 

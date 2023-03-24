@@ -20,18 +20,20 @@ async function bookingDetails (req, res)  {
       res.json(result);
     } else {
       res.send('No result');
+      res.json(success= true);
     }
   });
 };
 
 // Handle BookingInstance delete on POST.
 async function deleteBooking (req, res) {
-  const { id } = req.params;
+  const { id } = parseInt(req.params);
   const sql = `DELETE FROM bookings WHERE bookingId= ${id}`;
 
   dbQuery(sql, function(error) {
     if (error) throw error;
     res.send('Booking deleted');
+    res.json(success= true);
   });
 };
 
@@ -55,11 +57,12 @@ async function create_booking (req, res) {
   dbQuery(sql, function(error) {
     if (error) throw error;
     res.send(`Booking ${id} created!`);
+    res.json(success= true);
   });;
 };
 
 async function booking_update (req, res) {
-  const { id } = req.params;
+  const { id } = parseInt(req.params);
   const { bookingId, full__name, image, order_date, check_in, check_out, special_request, room_type, room_number, price, status } = validateEditBooking(req.body);  
   const sql = 
   `UPDATE rooms SET 
@@ -79,6 +82,7 @@ async function booking_update (req, res) {
   dbQuery(sql, function(error) {
     if (error) throw error;
     res.send(`Booking ${id} updated!`);
+    res.json(success= true);
   });
 };
 

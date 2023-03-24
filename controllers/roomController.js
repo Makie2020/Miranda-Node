@@ -49,6 +49,7 @@ async function create_room (req, res) {
   dbQuery(sql, function(error) {
     if (error) throw error;
     res.send(`Room ${id} created!`);
+    res.json(success= true);
   });;
 };
 
@@ -60,12 +61,13 @@ async function delete_room (req, res) {
   dbQuery(sql, function (error) {
     if (error) throw error;
     res.send(`Room ${id} deleted`);
+    res.json(success= true);
   });
 };
 
 // Display BookInstance update on PUT.
 async function room_update (req, res) {
-  const { id } = req.params;
+  const { id } = parseInt(req.params);
   const { image, imageTwo, imageThree, imageFour, imageFive, room_type,room_number, name, discountPercentage, discount, amenities, price, offer_price, status } = validateEditRoom(req.body);
   const sql = 
   `UPDATE rooms SET 
@@ -88,6 +90,7 @@ async function room_update (req, res) {
   dbQuery(sql, function(error) {
     if (error) throw error;
     res.send(`Room ${id} updated!`);
+    res.json(success= true);
   });
 };
 module.exports = {
