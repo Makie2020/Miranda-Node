@@ -1,12 +1,30 @@
-const dbQuery = require("../db.config");
+const mongoose = require("mongoose");
+const database = require('../db/db.config');
+const disconnect = require('../db/db.config');
 const { faker } = require('@faker-js/faker');
+const User = require('../models/userModel');
+const Contact = require('../models/contactModel');
+const Booking = require('../models/bookingModel');
+const Room = require('../models/roomModel');
 const bcrypt = require("bcrypt");
 
-const userPicutre = [
+const userAvatar = [
   'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/158.jpg',
   'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/157.jpg',
   'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/156.jpg',
   'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/155.jpg',
+];
+/*
+const amenities = [
+  "Air Conditioner",
+  "Heating",
+  "Supermarkt",
+  "Beach Towels",
+  "Safe",
+  "High speed WiFi",
+  "Sea view",
+  "Parking included",
+  "Breakfast",
 ];
 
 async function createRoom() {
@@ -50,7 +68,7 @@ async function createRoom() {
     roomOffer = null;
   }
 
-  return {
+  return new Room({
     id: faker.datatype.number({ min: 1, max: 999999 }),
     image: faker.helpers.arrayElement(pictureOne),
     imageTwo: faker.helpers.arrayElement(pictureTwo),
@@ -67,27 +85,28 @@ async function createRoom() {
     name: faker.helpers.arrayElement(["Deluxe A-21234", "Deluxe A-25234", "Suite A-21234"]),
     discountPercentage: discountPercent,
     discount: isOffer,
-    amenities: faker.lorem.lines(4),
+    amenities: faker.helpers.arrayElements(amenities, 3),
     price: roomRate,
     offer_price: roomOffer,
     status: faker.helpers.arrayElement(["Available", "Booked"]),
-  };
+  });
 }
 
-async function createRandomBooking() {
+async function createBooking() {
   const orderDate = faker.date.between("2022-01-01", "2022-12-12");
   const checkIn = faker.date.between(orderDate, "2023-11-01");
   const checkOut = faker.date.between(checkIn, "2023-12-31");
+  const rooms = await Room.find()
+    .exec()
+    .catch((e) => console.log(e));
 
-  const rooms = await dbQuery("SELECT * FROM rooms", "");
-  const roomsArray = JSON.parse(JSON.stringify(rooms));
   const randomNumber = Math.floor(Math.random() * 20);
-  const randomRoom = roomsArray[randomNumber];
+  const randomRoom = rooms[randomNumber];
 
-  return {
+  return new Booking({
     bookingId: faker.datatype.number({ min: 1, max: 99999 }),
     full__name: faker.name.fullName(),
-    image: faker.helpers.arrayElement(userPicutre),
+    image: faker.helpers.arrayElement(userAvatar),
     order_date: orderDate,
     check_in: checkIn,
     check_out: checkOut,
@@ -107,13 +126,12 @@ async function createRandomBooking() {
       "In Progress",
     ]),
     price: randomRoom.room_rate
-  };
+  });
 }
-
 async function createUser() {
-  return {
+  return new User({
     id: faker.datatype.number({ min: 1, max: 999999 }),
-    photo: faker.helpers.arrayElement(userPicutre),
+    photo: faker.helpers.arrayElement(userAvatar),
     full_name: faker.name.fullName(),
     position: faker.helpers.arrayElement([
       "Hotel Manager",
@@ -127,77 +145,96 @@ async function createUser() {
     phone_number: faker.phone.number("+## ## ### ## ##"),
     status: faker.helpers.arrayElement(["ACTIVE", "INACTIVE"]),
     password: await getHashPass(faker.internet.password()),
-  };
+  });
 }
-
+*/
 //HASH PASSWORD USER
 async function getHashPass(password) {
   return await bcrypt.hash(password, 10).then((result) => result);
 };
+/*
 // CONTACT
 async function createContact() {
-  return  {
+  return new Contact ({
     id: faker.datatype.number({ min: 1, max: 999999 }),
-    photo: faker.helpers.arrayElement(userPicutre),
+    photo: faker.helpers.arrayElement(userAvatar),
     date: faker.date.between("2022-01-01", "2023-12-12"),
     full_name: faker.name.fullName(),
     email: faker.internet.email(),
     phone_number: faker.phone.number("+## ## ### ## ##"),
     subject: faker.random.words(15),
-  };
+  });
 };
-// AMENITIES
-async function createAmenities() {
-  const amenities = [
-    "Air Conditioner",
-    "Heating",
-    "Supermarkt",
-    "Beach Towels",
-    "Safe",
-    "High speed WiFi",
-    "Sea view",
-    "Parking included",
-    "Breakfast",
-  ];
-  for (let i = 0; i < amenities.length; i++) {
-    console.log(amenities[i])
-    await dbQuery("INSERT INTO roomamenities SET ?", {
-      id: [i],
-      amenity: amenities[i]
-    });
-  }
-}
-
-//ROOM AMENITIES
-async function roomAmenities(){
-  const rooms = await dbQuery("SELECT * FROM rooms;", "");
-  const bookings= await dbQuery("SELECT * FROM roomBookings;", "");
-
-}
 
 // RUN FUNCTION
 async function run() {
+ database();
   //ROOMS
   for (let i = 0; i < 20; i++) {
-    const room = await createRoom();
-    await dbQuery("INSERT INTO rooms SET ?", room).catch(err => console.log(err));
+    const room= await createRoom();
+    await Room.create(room);
   }
   // BOOKINGS
   for(let i = 0; i < 20; i++) {
-    const booking = await createRandomBooking();
-    await dbQuery("INSERT INTO bookings SET ?", booking).catch(err => console.log(err));
+    const booking = await createBooking();
+    await Booking.create(booking);
   }
   // USERS
   for (let i = 0; i < 20; i++) {
     const user = await createUser();
-    await dbQuery("INSERT INTO users SET ?", user).catch(err => console.log(err)); 
+    await User.create(user);
   }
   //CONTACT
   for (let i = 0; i < 20; i++) {
     const message = await createContact();
-    await dbQuery("INSERT INTO contact SET ?", message).catch(err => console.log(err));
+    await Contact.create(message);
   }
-// AMENITIES
-  createAmenities();
+ disconnect();
 }
 run();
+*/
+async function seedUsers() {
+	try {
+		const usersCollection = await User.find()
+		if (usersCollection.length > 1) {
+			return
+		}
+		const quantity = 20
+		let users = []
+		for (let i = 0; i < quantity; i++) {
+			users.push(
+				new User({
+          id: faker.datatype.number({ min: 1, max: 999999 }),
+          photo: faker.helpers.arrayElement(userAvatar),
+          full_name: faker.name.fullName(),
+          position: faker.helpers.arrayElement([
+            "Hotel Manager",
+            "Reception",
+            "Housekeeping",
+            "Animation"
+          ]),
+          email: faker.internet.email(),
+          start_date: faker.date.between("2022-01-01", "2023-12-12"),
+          description: faker.lorem.lines(4),
+          phone_number: faker.phone.number("+## ## ### ## ##"),
+          status: faker.helpers.arrayElement(["ACTIVE", "INACTIVE"]),
+          password: await getHashPass(faker.internet.password()),
+				})
+			)
+		}
+		await User.remove()
+		users.forEach(user => {
+			User.create(user)
+		})
+		console.log('Users have been added!')
+	} catch (error) {
+		console.log(error)
+	}
+}
+
+const databaseConnect = async () => {
+  database();
+  seedUsers();
+  disconnect();
+}
+databaseConnect();

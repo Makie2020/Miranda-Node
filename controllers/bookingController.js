@@ -1,89 +1,113 @@
-var dbQuery = require('../db/db.config');
-const { validateCreateBooking , validateEditBooking} = require("../db/validationJoi");
+const database = require('../db/db.config')
+const disconnect = require('../db/db.config')
+const bookingModel = require("../models/bookingModel");
 
 // Display list of all Booking Instances.
-async function bookingList (req, res) {
-  return await 
-  dbQuery("SELECT * FROM bookings", function (error,results) {
-      if (error) throw error;
-      res.json(results);
-    });
+async function bookingList (req, res, next){
+  await database();
+
+  const bookings = await bookingModel.find()
+    .exec()
+    .catch((e) => next(e));
+
+  try {
+    if (bookings.length === 0) {
+      return res.status(400).json({ result: "Error fetching bookings" });
+    }
+    res.status(200).json(bookings);
+  } catch (error) {
+    next(error);
+  }
+
+  await disconnect();
 };
 
 // Display detail page for a specific BookingInstance.
-async function bookingDetails (req, res)  {
-  const { id } = req.params;
-  const sql = `SELECT * FROM bookings WHERE bookingId = ${id}`;
-  dbQuery(sql, function (error, result) {
-    if (error) throw error;
-    if (result.length > 0) {
-      res.json(result);
-    } else {
-      res.send('No result');
-      res.json(success= true);
+async function bookingDetails (req, res, next){
+  await database();
+
+  const booking = await bookingModel.findOne({ _id: req.params.bookingId })
+    .exec()
+    .catch((e) => next(e));
+
+  try {
+    if (booking === null) {
+      return res.status(400).json({ result: "Error fetching booking" });
     }
-  });
+    res.status(200).json(booking);
+  } catch (error) {
+    next(error);
+  }
+
+  await disconnect();
 };
 
 // Handle BookingInstance delete on POST.
 async function deleteBooking (req, res) {
-  const { id } = parseInt(req.params);
-  const sql = `DELETE FROM bookings WHERE bookingId= ${id}`;
+  await connect();
+  const booking = await bookingModel.findOneAndDelete({ _id: req.params.bookingId })
+    .exec()
+    .catch((e) => next(e));
 
-  dbQuery(sql, function(error) {
-    if (error) throw error;
-    res.send('Booking deleted');
-    res.json(success= true);
+  res.status(200).json({
+    message: `booking ${bookingId} deleted successfully`,
+    oldbooking: booking,
   });
+
+  await disconnect();
 };
 
 // Handle create Booking on POST.
 async function create_booking (req, res) {
-  const { bookingId, full__name, image, order_date, check_in, check_out, special_request, room_type, room_number, price, status } = validateCreateBooking(req.body);
-  const sql = 
-  `INSERT INTO bookings SET 
-    bookingId = '${bookingId}',
-    full__name = '${full__name}', 
-    image = '${image}', 
-    order_date = '${order_date}', 
-    check_in = '${check_in}', 
-    check_out = '${check_out}', 
-    special_request='${special_request}', 
-    room_type = '${room_type}', 
-    room_number = '${room_number}', 
-    price = '${price}',  
-    status ='${status}'`; 
+  await database;
+  const newBooking = {
+    bookingId: req.body.bookingId,
+    full__name: req.body.full__name,
+    image: req.body.image, 
+    order_date: req.body.order_date,
+    check_in: req.body.check_in,
+    check_out: req.body.check_out, 
+    special_request: req.body.special_request,
+    room_type: req.body.room_type,
+    room_number: req.body.room_number,
+    status: req.body.status,
+    price: req.body.price,
+  };
 
-  dbQuery(sql, function(error) {
-    if (error) throw error;
-    res.send(`Booking ${id} created!`);
-    res.json(success= true);
-  });;
+  await Booking.create(newBooking).catch((e) => next(e));
+
+  res.status(200).json({
+    message: "Booking created successfully",
+  });
+
+  await disconnect();
 };
 
 async function booking_update (req, res) {
-  const { id } = parseInt(req.params);
-  const { bookingId, full__name, image, order_date, check_in, check_out, special_request, room_type, room_number, price, status } = validateEditBooking(req.body);  
-  const sql = 
-  `UPDATE rooms SET 
-  bookingId = '${bookingId}',
-  full__name = '${full__name}', 
-  image = '${image}', 
-  order_date = '${order_date}', 
-  check_in = '${check_in}', 
-  check_out = '${check_out}', 
-  special_request='${special_request}', 
-  room_type = '${room_type}', 
-  room_number = '${room_number}', 
-  price = '${price}',  
-  status ='${status}',
-  WHERE id =${id}`;
+  await database;
+  const editBooking = {
+    bookingId: req.body.bookingId,
+    full__name: req.body.full__name,
+    image: req.body.image, 
+    order_date: req.body.order_date,
+    check_in: req.body.check_in,
+    check_out: req.body.check_out, 
+    special_request: req.body.special_request,
+    room_type: req.body.room_type,
+    room_number: req.body.room_number,
+    status: req.body.status,
+    price: req.body.price,
+  };
 
-  dbQuery(sql, function(error) {
-    if (error) throw error;
-    res.send(`Booking ${id} updated!`);
-    res.json(success= true);
+  const booking = await bookingModel.findOneAndUpdate({ _id: req.params.bookingId }, editBooking).catch((e) => next(e));
+
+  res.status(200).json({
+    message: `Booking ${bookingId} edited successfully`,
+    oldbooking: booking,
+    newbooking: req.body.booking,
   });
+
+  await disconnect();
 };
 
 module.exports = {
