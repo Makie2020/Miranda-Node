@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const BookingSchema = new mongoose.Schema({
-  bookingId: {
+  id: {
     type: Number,
     required: true,
   },
@@ -27,7 +27,6 @@ const BookingSchema = new mongoose.Schema({
   },
   special_request: {
     type: String,
-    required: true,
   },
   room_type: {
     type: String,
@@ -43,7 +42,6 @@ const BookingSchema = new mongoose.Schema({
   },
   price: {
     type: Number,
-    required: true,
   },
 });
 

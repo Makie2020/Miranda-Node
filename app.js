@@ -10,6 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+
 //LOGIN
 const routerLogin = require('./routers/login');
 app.use('/login', routerLogin);
@@ -43,5 +44,8 @@ app.use(function(err, req, res, next) {
   res.json(err.message);
 });
 
+app.listen(process.env.API_PORT, function() {
+  console.log(`Server running on port ${process.env.API_PORT}`);
+});
 
 module.exports = app;

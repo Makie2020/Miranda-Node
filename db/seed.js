@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const database = require('../db/db.config');
-const disconnect = require('../db/db.config');
 const { faker } = require('@faker-js/faker');
 const User = require('../models/userModel');
 const Contact = require('../models/contactModel');
@@ -14,7 +13,7 @@ const userAvatar = [
   'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/156.jpg',
   'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/155.jpg',
 ];
-/*
+
 const amenities = [
   "Air Conditioner",
   "Heating",
@@ -104,7 +103,7 @@ async function createBooking() {
   const randomRoom = rooms[randomNumber];
 
   return new Booking({
-    bookingId: faker.datatype.number({ min: 1, max: 99999 }),
+    id: faker.datatype.number({ min: 1, max: 99999 }),
     full__name: faker.name.fullName(),
     image: faker.helpers.arrayElement(userAvatar),
     order_date: orderDate,
@@ -147,12 +146,12 @@ async function createUser() {
     password: await getHashPass(faker.internet.password()),
   });
 }
-*/
+
 //HASH PASSWORD USER
 async function getHashPass(password) {
   return await bcrypt.hash(password, 10).then((result) => result);
 };
-/*
+
 // CONTACT
 async function createContact() {
   return new Contact ({
@@ -189,52 +188,6 @@ async function run() {
     const message = await createContact();
     await Contact.create(message);
   }
- disconnect();
+ mongoose.disconnect();
 }
 run();
-*/
-async function seedUsers() {
-	try {
-		const usersCollection = await User.find()
-		if (usersCollection.length > 1) {
-			return
-		}
-		const quantity = 20
-		let users = []
-		for (let i = 0; i < quantity; i++) {
-			users.push(
-				new User({
-          id: faker.datatype.number({ min: 1, max: 999999 }),
-          photo: faker.helpers.arrayElement(userAvatar),
-          full_name: faker.name.fullName(),
-          position: faker.helpers.arrayElement([
-            "Hotel Manager",
-            "Reception",
-            "Housekeeping",
-            "Animation"
-          ]),
-          email: faker.internet.email(),
-          start_date: faker.date.between("2022-01-01", "2023-12-12"),
-          description: faker.lorem.lines(4),
-          phone_number: faker.phone.number("+## ## ### ## ##"),
-          status: faker.helpers.arrayElement(["ACTIVE", "INACTIVE"]),
-          password: await getHashPass(faker.internet.password()),
-				})
-			)
-		}
-		await User.remove()
-		users.forEach(user => {
-			User.create(user)
-		})
-		console.log('Users have been added!')
-	} catch (error) {
-		console.log(error)
-	}
-}
-
-const databaseConnect = async () => {
-  database();
-  seedUsers();
-  disconnect();
-}
-databaseConnect();

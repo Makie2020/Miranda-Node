@@ -1,12 +1,11 @@
 const database = require('../db/db.config')
-const disconnect = require('../db/db.config')
+const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const userModel = require("../models/userModel");
 
 // Display list of allUserInstances.
 async function usersList (req, res, next){
-  await database();
-
+  database();
   const users = await userModel.find()
     .exec()
     .catch((e) => next(e));
@@ -15,16 +14,15 @@ async function usersList (req, res, next){
     if (users.length === 0) {
       return res.status(400).json({ result: "Error fetching users" });
     }
-    res.status(200).json(users);
+    res.status(200).json(data = users);
+    mongoose.disconnect();
   } catch (error) {
     next(error);
   }
-
-  await disconnect();
 };
 // Handle userInstance create on POST.
 async function create_user (req, res) {  
-  await database();
+  database();
   const hashedPassword = await bcrypt
   .hash(req.body.pass, 10)
   .then((result) => result);
@@ -42,11 +40,8 @@ async function create_user (req, res) {
   };
 
   await User.create(newUser).catch((e) => next(e));
-  res.status(200).json({
-    message: `User ${id} created successfully`,
-  });
-
-  await disconnect();
+  res.status(200).json({success: true});
+  mongoose.disconnect();
 };
 
 module.exports = {
