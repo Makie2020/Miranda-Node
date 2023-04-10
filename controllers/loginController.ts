@@ -4,7 +4,7 @@ require ('dotenv');
 
 const secretToken = process.env.SECRET_KEY;
 
-const loginController = (req, res, next) => {
+const loginController = (req:Request, res:Response, next: Function) => {
   passport.authenticate('login', 
     async (err, user, info) => {
       try{
@@ -21,7 +21,7 @@ const loginController = (req, res, next) => {
             if (err) throw new Error(err);
             const body = { name: user.name };
             const token = jwt.sign({ user: body }, secretToken);
-            return res.json({ token });
+            return res.json({token});
           }
         );
       } catch(err) {
@@ -29,4 +29,4 @@ const loginController = (req, res, next) => {
       }
     }) (req, res, next)
 }
-module.exports = loginController;
+module.exports = {loginController};

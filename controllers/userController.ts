@@ -2,9 +2,9 @@ const database = require('../db/db.config')
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const userModel = require("../models/userModel");
-
+import type {Request, Response} from 'express';
 // Display list of allUserInstances.
-async function usersList (req, res, next){
+async function usersList (req: Request, res:Response, next:Function){
   database();
   const users = await userModel.find()
     .exec()
@@ -14,14 +14,14 @@ async function usersList (req, res, next){
     if (users.length === 0) {
       return res.status(400).json({ result: "Error fetching users" });
     }
-    res.status(200).json(data = users);
+    res.status(200).json({data: users});
     mongoose.disconnect();
   } catch (error) {
     next(error);
   }
 };
 // Handle userInstance create on POST.
-async function create_user (req, res) {  
+async function create_user (req:Request, res:Response) {  
   database();
   const hashedPassword = await bcrypt
   .hash(req.body.pass, 10)
@@ -39,7 +39,7 @@ async function create_user (req, res) {
     password: hashedPassword
   };
 
-  await User.create(newUser).catch((e) => next(e));
+  await userModel.create(newUser).catch((e) => console.log(e));
   res.status(200).json({success: true});
   mongoose.disconnect();
 };

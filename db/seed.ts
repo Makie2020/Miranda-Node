@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
-const database = require('../db/db.config');
+const mongooseSeed = require("mongoose");
+const databaseSeed = require('../db/db.config');
 const { faker } = require('@faker-js/faker');
-const User = require('../models/userModel');
-const Contact = require('../models/contactModel');
-const Booking = require('../models/bookingModel');
-const Room = require('../models/roomModel');
+const UserModel = require('../models/userModel');
+const ContactModel = require('../models/contactModel');
+const BookingModel = require('../models/bookingModel');
+const RoomModel = require('../models/roomModel');
 const bcrypt = require("bcrypt");
 
 const userAvatar = [
@@ -60,14 +60,14 @@ async function createRoom() {
     discountPercent = 0;
   }
 
-  let roomOffer= null;
+  let roomOffer: null|number = null;
   if (isOffer === "Yes") {
     roomOffer = roomRate - (discountPercent * roomRate) / 100;
   } else {
     roomOffer = null;
   }
 
-  return new Room({
+  return new RoomModel({
     id: faker.datatype.number({ min: 1, max: 999999 }),
     image: faker.helpers.arrayElement(pictureOne),
     imageTwo: faker.helpers.arrayElement(pictureTwo),
@@ -97,12 +97,12 @@ async function createBooking() {
   const checkOut = faker.date.between(checkIn, "2023-12-31");
   const rooms = await Room.find()
     .exec()
-    .catch((e) => console.log(e));
+    .catch((e:any) => console.log(e));
 
   const randomNumber = Math.floor(Math.random() * 20);
   const randomRoom = rooms[randomNumber];
 
-  return new Booking({
+  return new BookingModel({
     id: faker.datatype.number({ min: 1, max: 99999 }),
     full__name: faker.name.fullName(),
     image: faker.helpers.arrayElement(userAvatar),
@@ -128,7 +128,7 @@ async function createBooking() {
   });
 }
 async function createUser() {
-  return new User({
+  return new UserModel({
     id: faker.datatype.number({ min: 1, max: 999999 }),
     photo: faker.helpers.arrayElement(userAvatar),
     full_name: faker.name.fullName(),
@@ -148,13 +148,13 @@ async function createUser() {
 }
 
 //HASH PASSWORD USER
-async function getHashPass(password) {
-  return await bcrypt.hash(password, 10).then((result) => result);
+async function getHashPass(password:string) {
+  return await bcrypt.hash(password, 10).then((result:string) => result);
 };
 
 // CONTACT
 async function createContact() {
-  return new Contact ({
+  return new ContactModel ({
     id: faker.datatype.number({ min: 1, max: 999999 }),
     photo: faker.helpers.arrayElement(userAvatar),
     date: faker.date.between("2022-01-01", "2023-12-12"),
@@ -167,7 +167,7 @@ async function createContact() {
 
 // RUN FUNCTION
 async function run() {
- database();
+  databaseSeed();
   //ROOMS
   for (let i = 0; i < 20; i++) {
     const room= await createRoom();
@@ -188,6 +188,6 @@ async function run() {
     const message = await createContact();
     await Contact.create(message);
   }
- mongoose.disconnect();
+ mongooseSeed.disconnect();
 }
 run();

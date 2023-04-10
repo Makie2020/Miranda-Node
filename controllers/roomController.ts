@@ -1,9 +1,9 @@
 const database = require('../db/db.config')
 const mongoose = require("mongoose");
 const roomModel = require("../models/roomModel");
-
+import type {Request, Response} from 'express';
 // Display list of allRoomInstances.
-async function roomList (req, res, next){
+async function roomList (req:Request, res:Response, next: Function){
   database();
   const rooms = await roomModel.find()
     .exec()
@@ -13,7 +13,7 @@ async function roomList (req, res, next){
     if (rooms.length === 0) {
       return res.status(400).json({ result: "Error fetching rooms" });
     }
-    res.status(200).json(data = rooms);
+    res.status(200).json({data: rooms});
     mongoose.disconnect();
   } catch (error) {
     next(error);
@@ -22,7 +22,7 @@ async function roomList (req, res, next){
 
 // Display detail page for a specific RoomInstance.
 
-async function roomDetails (req, res, next){
+async function roomDetails (req: Request, res:Response, next: Function){
   database();
   const room = await roomModel.findOne({id: req.params.id })
     .exec()
@@ -32,7 +32,7 @@ async function roomDetails (req, res, next){
     if (room === null) {
       return res.status(400).json({ result: "Error fetching room" });
     }
-    res.status(200).json(data = room);
+    res.status(200).json({data: room});
     mongoose.disconnect();
   } catch (error) {
     next(error);
@@ -40,7 +40,7 @@ async function roomDetails (req, res, next){
 };
 
 // Handle RoomInstance create on POST.
-async function create_room (req, res, next) {
+async function create_room (req: Request, res: Response, next: Function) {
   database ();
   const newRoom= {
     id: req.body.id,
@@ -67,7 +67,7 @@ async function create_room (req, res, next) {
 };
 
 // Handle RoomInstance delete on POST.
-async function delete_room (req, res, next) {
+async function delete_room (req:Request, res:Response, next: Function) {
   database();
   const room = await roomModel.findOneAndDelete({id: req.params.id })
     .exec()
@@ -76,7 +76,7 @@ async function delete_room (req, res, next) {
 };
 
 // Display BookInstance update on PUT.
-async function room_update (req, res) {
+async function room_update (req:Request, res:Response) {
   database ();
   const editRoom= {
     id: req.body.id,
@@ -96,9 +96,9 @@ async function room_update (req, res) {
     status: req.body.status,
   };
 
-  const room = await roomModel.findOneAndUpdate({ id: req.params.id }, editRoom).catch((e) => next(e));
+  const room = await roomModel.findOneAndUpdate({ id: req.params.id }, editRoom).catch((e) => console.log(e));
 
-  res.status(200).json(data = room);
+  res.status(200).json({data: room});
   mongoose.disconnect();
 };
 

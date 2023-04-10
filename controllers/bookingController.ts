@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
 const database = require('../db/db.config');
 const bookingModel = require("../models/bookingModel");
+import type {Request, Response} from 'express';
 
 // Display list of all Booking Instances.
-async function bookingList (req, res, next){
+async function bookingList (req: Request, res: Response, next: Function){
   database();
   const bookings = await bookingModel.find()
     .exec()
@@ -12,7 +13,7 @@ async function bookingList (req, res, next){
     if (bookings.length === 0) {
       return res.status(400).json({ result: "Error fetching bookings" });
     }
-    res.status(200).json(data = bookings);
+    res.status(200).json({data: bookings});
     mongoose.disconnect();
   } catch (error) {
     next(error);
@@ -20,16 +21,16 @@ async function bookingList (req, res, next){
 };
 
 // Display detail page for a specific BookingInstance.
-async function bookingDetails (req, res, next){
+async function bookingDetails (req: Request, res: Response, next: Function) {
   database();
-  const booking = await bookingModel.findOne({id: req.params.id })
+  const booking = await bookingModel.findOne({id: req.params.id }).exec()
     .exec()
     .catch((error) => next(error));
   try {
     if (booking === null) {
       return res.status(400).json({ result: "Error fetching booking" });
     }
-    res.status(200).json(data = booking);
+    res.status(200).json({data: booking});
     mongoose.disconnect();
   } catch (error) {
     next(error);
@@ -48,7 +49,7 @@ async function deleteBooking (req, res) {
   }
 };
 // Handle create Booking on POST.
-async function create_booking (req, res) {
+async function create_booking (req: Request, res: Response) {
   database();
   const newBooking = {
     bookingId: req.body.bookingId,
@@ -64,7 +65,7 @@ async function create_booking (req, res) {
     price: req.body.price,
   };
 
-  await Booking.create(newBooking).catch((error) => next(error));
+  await bookingModel.create(newBooking).catch((error) => console.log(error));
   res.status(200).json({success: true});
   mongoose.disconnect();
 };
@@ -85,7 +86,7 @@ async function booking_update (req, res) {
     price: req.body.price,
   };
 
-  const booking = await bookingModel.findOneAndUpdate({ id: req.params.bookingId }, editBooking).catch((error) => next(error));
+  const booking = await bookingModel.findOneAndUpdate({ id: req.params.id }, editBooking).catch((error) => console.log(error));
   res.status(200).json({success: true, data: booking});
   mongoose.disconnect();
 };
