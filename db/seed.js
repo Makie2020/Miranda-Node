@@ -12,6 +12,12 @@ const userAvatar = [
   'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/157.jpg',
   'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/156.jpg',
   'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/155.jpg',
+  'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/126.jpg',
+  'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/125.jpg',
+  'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/124.jpg',
+  'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/123.jpg',
+  'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/122.jpg',
+  'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/120.jpg',
 ];
 
 const amenities = [
@@ -28,27 +34,27 @@ const amenities = [
 
 async function createRoom() {
   const pictureOne = [
-    "https://loremflickr.com/g/320/240/paris",
-    "https://loremflickr.com/g/320/240/madrid"
+    "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80",
+    "https://images.unsplash.com/photo-1591088398332-8a7791972843?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80"
   ];
   const pictureTwo = [
-    "https://loremflickr.com/g/320/240/barcelona",
-    "https://loremflickr.com/g/320/240/beach"
+    "https://images.unsplash.com/photo-1445991842772-097fea258e7b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+    "https://images.unsplash.com/photo-1589923158776-cb4485d99fd6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80"
   ];
   const pictureThree = [
-    "https://loremflickr.com/g/320/240/barcelona",
-    "https://loremflickr.com/g/320/240/beach"
+    "https://images.unsplash.com/photo-1498503182468-3b51cbb6cb24?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+    "https://images.unsplash.com/photo-1586611292717-f828b167408c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80"
   ];
   const pictureFour = [
-    "https://loremflickr.com/g/320/240/paris",
-    "https://loremflickr.com/g/320/240/madrid"
+    "https://images.unsplash.com/photo-1600011689032-8b628b8a8747?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80",
+    "https://images.unsplash.com/photo-1615460549969-36fa19521a4f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80"
   ];
   const pictureFive = [
-    "https://loremflickr.com/g/320/240/palma",
-    "https://loremflickr.com/g/320/240/malaga"
+    "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+    "https://images.unsplash.com/photo-1576698483491-8c43f0862543?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=648&q=80"
   ];
 
-  const roomRate = faker.datatype.number({ max: 100000 });
+  const roomRate = faker.datatype.number({ max: 1000 });
   const isOffer = faker.helpers.arrayElement(["Yes", "No"]);
   let discountPercent= 0;
   if (isOffer === "Yes") {
@@ -62,7 +68,7 @@ async function createRoom() {
 
   let roomOffer= null;
   if (isOffer === "Yes") {
-    roomOffer = roomRate - (discountPercent * roomRate) / 100;
+    roomOffer = (roomRate - (discountPercent * roomRate) / 100).toFixed(2);;
   } else {
     roomOffer = null;
   }
@@ -106,6 +112,11 @@ async function createBooking() {
     id: faker.datatype.number({ min: 1, max: 99999 }),
     full__name: faker.name.fullName(),
     image: faker.helpers.arrayElement(userAvatar),
+    imageRoom: randomRoom.image,
+    imageRoomTwo:randomRoom.imageTwo,
+    imageRoomThree: randomRoom.imageThree,
+    imageRoomFour: randomRoom.imageFour,
+    imageRoomFive: randomRoom.imageFive,
     order_date: orderDate,
     check_in: checkIn,
     check_out: checkOut,

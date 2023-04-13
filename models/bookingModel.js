@@ -13,6 +13,21 @@ const BookingSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  imageRoom: {
+    type: String,
+  },
+  imageRoomTwo: {
+    type: String,
+  },
+  imageRoomThree: {
+    type: String,
+  },
+  imageRoomFour: {
+    type: String,
+  },
+  imageRoomFive: {
+    type: String,
+  },
   order_date: {
     type: Date,
     required: true,

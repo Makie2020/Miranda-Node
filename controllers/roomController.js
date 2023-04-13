@@ -10,8 +10,8 @@ async function roomList (req, res, next){
   .catch((e) => next(e));
 
   try {
-      res.status(200).json({data: rooms});
-      await mongoose.disconnect();
+    await mongoose.disconnect();
+    res.status(200).json({data: rooms});  
   } catch (err) {
       next(err);
       res.status(500).send({message: err});
@@ -20,25 +20,22 @@ async function roomList (req, res, next){
 
 // Display detail page for a specific RoomInstance.
 async function roomDetails (req, res, next){
-  database();
+  await database();
   const room = await roomModel.findOne({id: req.params.id })
     .exec()
-    .catch((e) => next(e));
-
   try {
+    await mongoose.disconnect();
     if (room === null) {
-      return res.status(400).json({ result: "Error fetching room" });
+      res.status(400).json({ result: "Error fetching room" });
     }
     res.status(200).json({data: room});
-    mongoose.disconnect();
   } catch (error) {
-    next(error);
+    console.log(error);
   }
 };
-
 // Handle RoomInstance create on POST.
 async function create_room (req, res, next) {
-  database ();
+  await database ();
   const newRoom= {
     id: req.body.id,
     image: req.body.image,
@@ -58,23 +55,23 @@ async function create_room (req, res, next) {
   };
 
   await roomModel.create(newRoom).catch((e) => next(e));
-
-  res.status(200).json({success: true});
-  mongoose.disconnect();
+  await mongoose.disconnect();
+  return res.status(200).json({success: true, room: newRoom});
 };
 
 // Handle RoomInstance delete on POST.
 async function delete_room (req, res, next) {
-  database();
+  await database();
   const room = await roomModel.findOneAndDelete({id: req.params.id })
     .exec()
     .catch((e) => next(e));
+  await mongoose.disconnect();  
   res.status(200).json({sucess: true, data: room});
 };
 
 // Display BookInstance update on PUT.
 async function room_update (req, res) {
-  database ();
+  await database ();
   const editRoom= {
     id: req.body.id,
     iamge: req.body.image,
@@ -94,9 +91,8 @@ async function room_update (req, res) {
   };
 
   const room = await roomModel.findOneAndUpdate({ id: req.params.id }, editRoom).catch((e) => next(e));
-
-  res.status(200).json(data = room);
-  mongoose.disconnect();
+  await mongoose.disconnect();
+  res.status(200).json({data: room});
 };
 
 module.exports = {

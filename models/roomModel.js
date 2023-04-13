@@ -15,15 +15,13 @@ const RoomSchema = new mongoose.Schema({
   },
   imageThree: {
     type: String,
-    required: true,
+
   },
   imageFour: {
     type: String,
-    required: true,
   },
   imageFive: {
     type: String,
-    required: true,
   },
   room_type: {
     type: String,
@@ -39,7 +37,6 @@ const RoomSchema = new mongoose.Schema({
   },
   discountPercentage: {
     type: Number,
-    required: true,
   },
   discount: {
     type: String,
