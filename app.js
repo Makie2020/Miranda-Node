@@ -1,15 +1,15 @@
 var express = require("express");
+var cors = require('cors')
 var dotenv = require ('dotenv');
-dotenv.config()
+dotenv.config();
 var passport = require("passport");
-const listEndpoints = require('express-list-endpoints')
+const listEndpoints = require('express-list-endpoints');
 
 require('./auth/auth');
 const app = express();
-
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
 
 //LOGIN
 const routerLogin = require('./routers/login');
@@ -21,8 +21,8 @@ app.use('/bookings', passport.authenticate('jwt', { session: false }), routerBoo
 const routerRooms = require('./routers/rooms');
 app.use('/rooms', passport.authenticate('jwt', { session: false }), routerRooms);
 
-const routersUsers = require('./routers/users');
-app.use('/users', passport.authenticate('jwt', { session: false }), routersUsers);
+const routerUsers = require('./routers/users');
+app.use('/users', passport.authenticate('jwt', { session: false }), routerUsers);
 
 const routerContact = require('./routers/contact');
 app.use('/contact', passport.authenticate('jwt', { session: false }), routerContact);
@@ -33,12 +33,7 @@ app.get("/", function(req, res) {
   res.json({message: list});
 });
 
-// catch 404 and forward to error handler
-app.use(function(next) {
-  next(createError(404));
-});
 
-// error handler
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.json(err.message);

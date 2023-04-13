@@ -6,9 +6,9 @@ const ExtractJwt = require('passport-jwt').ExtractJwt;
 require ('dotenv');
 
 const users = {
-    name: 'marieke',
+    name: 'Marieke',
     password: 'test',
-}
+};
 
 passport.use('login', 
     new localStrategy({
@@ -19,9 +19,8 @@ passport.use('login',
             if (users.name === name && users.password === password) {
                 return done(null, users, {message: "Login successful"})
             }
-            return done(null, false, {message: "Name or Password is wrong"})
         } catch(error) {
-            done(error);
+            return done(error);
         }
     })
 );

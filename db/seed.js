@@ -119,12 +119,13 @@ async function createBooking() {
     ]),
     room_type: randomRoom.room_type,
     room_number: randomRoom.room_number,
+    price: randomRoom.price,
     status: faker.helpers.arrayElement([
       "Check In",
       "Check Out",
       "In Progress",
     ]),
-    price: randomRoom.room_rate
+    amenities: randomRoom.amenities 
   });
 }
 async function createUser() {

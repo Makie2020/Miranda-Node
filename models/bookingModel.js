@@ -43,6 +43,9 @@ const BookingSchema = new mongoose.Schema({
   price: {
     type: Number,
   },
+  amenities: {
+    type: Array,
+  },
 });
 
 const Booking = mongoose.model("Booking", BookingSchema);

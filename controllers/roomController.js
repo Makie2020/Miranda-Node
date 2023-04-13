@@ -4,24 +4,21 @@ const roomModel = require("../models/roomModel");
 
 // Display list of allRoomInstances.
 async function roomList (req, res, next){
-  database();
+  await database();
   const rooms = await roomModel.find()
-    .exec()
-    .catch((e) => next(e));
+  .exec()
+  .catch((e) => next(e));
 
   try {
-    if (rooms.length === 0) {
-      return res.status(400).json({ result: "Error fetching rooms" });
-    }
-    res.status(200).json(data = rooms);
-    mongoose.disconnect();
-  } catch (error) {
-    next(error);
+      res.status(200).json({data: rooms});
+      await mongoose.disconnect();
+  } catch (err) {
+      next(err);
+      res.status(500).send({message: err});
   }
 };
 
 // Display detail page for a specific RoomInstance.
-
 async function roomDetails (req, res, next){
   database();
   const room = await roomModel.findOne({id: req.params.id })
@@ -32,7 +29,7 @@ async function roomDetails (req, res, next){
     if (room === null) {
       return res.status(400).json({ result: "Error fetching room" });
     }
-    res.status(200).json(data = room);
+    res.status(200).json({data: room});
     mongoose.disconnect();
   } catch (error) {
     next(error);

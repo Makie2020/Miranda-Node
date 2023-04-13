@@ -21,7 +21,7 @@ const loginController = (req, res, next) => {
             if (err) throw new Error(err);
             const body = { name: user.name };
             const token = jwt.sign({ user: body }, secretToken);
-            return res.json({ token });
+            return res.json(token);
           }
         );
       } catch(err) {
