@@ -74,7 +74,7 @@ async function room_update (req, res) {
   await database ();
   const editRoom= {
     id: req.body.id,
-    iamge: req.body.image,
+    image: req.body.image,
     imageTwo: req.body.imageTwo,
     imageThree: req.body.imageThree,
     imageFour: req.body.imageFour,
@@ -92,7 +92,7 @@ async function room_update (req, res) {
 
   const room = await roomModel.findOneAndUpdate({ id: req.params.id }, editRoom).catch((e) => next(e));
   await mongoose.disconnect();
-  res.status(200).json({data: room});
+  return res.status(200).json({success: true, data: room});
 };
 
 module.exports = {

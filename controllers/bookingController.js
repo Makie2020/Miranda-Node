@@ -70,7 +70,7 @@ async function create_booking (req, res) {
 async function booking_update (req, res) {
   await database();
   const editBooking = {
-    bookingId: req.body.id,
+    id: req.body.id,
     full__name: req.body.full__name,
     image: req.body.image, 
     order_date: req.body.order_date,
